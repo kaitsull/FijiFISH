@@ -8,22 +8,22 @@ quantification.*
 ![](data/happyhip.png)
   
   
--   [INSTALLATION](#installation) 
+-   🔧 [INSTALLATION](#installation) 
     -   [Permanent](#permanent)
     -   [Temporary](#temporary)
--   [FILE CONVENTIONS](#file-conventions)  
+-   📂 [FILE CONVENTIONS](#file-conventions)  
     -   [ROIs](#rois)  
     -   [Image Files](#image-files)  
--   [IMAGE ANALYSIS](#image-analysis)  
+-   🔬 [IMAGE ANALYSIS](#image-analysis)  
     -   [Automated Run](#automated-run)  
     -   [Registration](#registration)  
     -   [Segmentation](#segmentation)  
     -   [Quantification](#quantification)  
     -   [Single Channel Quantification](#single-channel-quantification)
     -   [HiPlex Overlay](#hiplex-overlay)  
--   [BUGS AND ISSUES](#bugs-and-issues)  
+-   📊 [DATA ANALYSIS](#data-analysis)     
+-   🐛 [BUGS AND ISSUES](#bugs-and-issues)  
   
-
 ## Installation  
   
   ![](https://github.com/cembrowskilab/HiPlexMenu/blob/main/data/fiji.png)
@@ -64,16 +64,28 @@ Files used in the FIJI app **must be**:
 *Example file folder for analysis...*  
 ![](https://github.com/cembrowskilab/HiPlexMenu/blob/main/data/max.png)
 
-## Image Analysis  
+# Image Analysis  
 *HiPlex Menu Options...*  
 ![](https://github.com/cembrowskilab/HiPlexMenu/blob/main/data/hiplex%20menu.png)  
   
-### Automated Run  
+## Automated Run  
+
+## Registration  
+
+## Segmentation  
+
+## Quantification  
+
+## Single Channel Quantification  
+
+## HiPlex Overlay  
 
   
+# Data Analysis  
+See the [RUHi Package](https://github.com/cembrowskilab/RUHi) for how to: visualize, dimensionally reduce, and cluster this data
 
-## Bugs and Issues  
-
+# Bugs and Issues  
+Take a screenshot of any error messages or debug windows you get and send them to *Kaitlin* 😺
 
 
 
