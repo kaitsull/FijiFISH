@@ -1,6 +1,7 @@
 HiPlex Menu *v3.0.0*
 ================  
 
+Author: **Kaitlin Sullivan**, 2022
 *FIJI dropdown menu for mFISH registration, segmentation, and
 quantification.*  
 
