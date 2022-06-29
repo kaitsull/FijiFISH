@@ -1,6 +1,6 @@
 HiPlex Menu *v3.0.0*
 ================  
-### **Kaitlin Sullivan**_, UBC 2022_    
+##### BY: KAITLIN SULLIVAN (UBC)    
   
 *FIJI dropdown menu for mFISH registration, segmentation, and
 quantification.*   
