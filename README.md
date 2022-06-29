@@ -1,9 +1,9 @@
 HiPlex Menu *v3.0.0*
 ================  
-
-Author: **Kaitlin Sullivan**, 2022
+### **Kaitlin Sullivan**_, UBC 2022_    
+  
 *FIJI dropdown menu for mFISH registration, segmentation, and
-quantification.*  
+quantification.*   
 
 ![](data/happyhip.png)
   
