@@ -68,24 +68,64 @@ Files used in the FIJI app **must be**:
 *HiPlex Menu Options...*  
 ![](https://github.com/cembrowskilab/HiPlexMenu/blob/main/data/hiplex%20menu.png)  
   
-## Automated Run  
+## `Automated Run`  
+This option runs a full analysis from `Registration` -> `Segmentation -> `Quantification` with pauses for options (detailed further below) 
+  
+**TO RUN:**    
+-   simply drag and drop `R1_405_DAPI.tif` into FIJI and select `Automated Run`.  
+  
+**OUTPUT:**    
+-   All files and folders generated from `Registration`, `Segmentation`, `Quantification`, and `HiPlex Overlay`  
+  
+## `Registration`  
+This option takes the original images and registers them together by DAPI expression.  
+  
+ **TO RUN:**
+ -    Drag-and-drop `R1_405_DAPI.tif` into FIJI and select `Registration`.  
+   
+ **WHAT HAPPENS:**  
+ - Images will have maximum intensity projections taken and saved in a `max folder`  
+ - Images will be croped to be the same size and saved in a `crop folder`  
+    - Automatic Cropping: puts a box in the upper left corner of each image (auto-choice for `Automated Run`)  
+    - Manual Cropping: allows one to move the location of the box (**be careful not to change the size of the box or move it form the limits however**)  
+ - Images will be linearly registered to eachother and saved in a `regImages folder`    
+ - Images will be nonlinearly registered to eachother and saved in a `nonLinear folder`  
 
-## Registration  
+## `Segmentation`  
+This option takes the registered DAPI images from the `nonLinear folder` and segments them.  
 
-## Segmentation  
+**TO RUN:**    
+-   Drag-and-drop `R1_405_DAPI.tif_registered.tif_NL.tif` from the `nonLinear folder` into FIJI and select `Segmentation`.  
 
-## Quantification  
+**WHAT HAPPENS: **    
+-   Segmentation Type:  
+    -    Segment based on DAPI signal from every round (to ensure registration in the z-axis)  
+    -    Segment only Round 1 (not recommended)  
+-   Threshold Type:  
+    -     Automatic Thresholding  
+    -     Manual Thresholding (select threshold manually with a slider if some DAPI rounds look strange via Automatic Thresholding)    
+-   Segmented image is saved in an `analyzedImages folder`      
+  
+  
+## `Quantification`  
+This option ta
 
-## Single Channel Quantification  
+## `Single Channel Quantification`  
 
-## HiPlex Overlay  
+## `HiPlex Overlay`  
+**The GUI for this function is incomplete!!!**   
+
+To run:
+-   Drag-and-drop your first gene image from the `overlay folder` into FIJI and select `HiPlex Overlay` from the menu
+-   When running, a dialogue box will pop-up with the order and colours of each channel *(these cannot be changed currently despite the GUI seeming interactive)*.  
+-   Press `OK` and the image will save in the `overlay` folder as `TestCOMP.png`.
 
   
 # Data Analysis  
 See the [RUHi Package](https://github.com/cembrowskilab/RUHi) for how to: visualize, dimensionally reduce, and cluster this data
 
 # Bugs and Issues  
-Take a screenshot of any error messages or debug windows you get and send them to *Kaitlin* 😺
+Take a screenshot of any error messages or debug windows you get and send them to *Kaitlin* (or open up an issue in the repo) 😺  
 
 
 
