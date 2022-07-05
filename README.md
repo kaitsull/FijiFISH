@@ -1,4 +1,4 @@
-HiPlex Menu *v3.0.0*
+HiPlex Menu *v3.5.0*
 ================  
 ##### BY: KAITLIN SULLIVAN (UBC)    
   
