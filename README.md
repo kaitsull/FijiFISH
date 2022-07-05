@@ -117,8 +117,10 @@ This option ta
 
 To run:
 -   Drag-and-drop your first gene image from the `overlay folder` into FIJI and select `HiPlex Overlay` from the menu
--   When running, a dialogue box will pop-up with the order and colours of each channel *(these cannot be changed currently despite the GUI seeming interactive)*.  
--   Press `OK` and the image will save in the `overlay` folder as `TestCOMP.png`.
+-   When running, the order and colours of the images will print out in the `Log` box.  
+-   The image will save in the `overlay` folder as `TestCOMP.png`.  
+-   **In the future, there will be an option to change the colours and order of overlay images**  
+-   To create a manual overlay image: pseudocolour according to prefered image colours and and use FIJI's `Image` -> `Overlay...` -> `Add Image`
 
   
 # Data Analysis  
