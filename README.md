@@ -108,18 +108,41 @@ This option takes the registered DAPI images from the `nonLinear folder` and seg
   
   
 ## `Quantification`  
-This option ta
+This option takes individual gene expression images from the `nonLinear folder` and quantifies their expression into tables saved in the `analyzedTables folder`.  
+  
+**TO RUN:**  
+-   Drag-and-drop your first gene image from the `nonLinear folder` into FIJI and select `Quantification` from the menu  
+  
+  
+**WHAT HAPPENS:** 
+-   `Automatic thresholding` will take the provided tail of the image's cumulative histogram  
+-   `Manual thresholding` allows one to manually select the threshold for each image (*useful in cases of autofluorescence*)  
+
+**OUTPUT:**  
+-   Quantified tables for [`RUHi`]() analysis in `analyzedTables folder`  
+-   Quantified image overlays for quality control in the `analyzedImages folder`  
+  
 
 ## `Single Channel Quantification`  
+This option allows one to manually threshold and quantify a single channel that may not look exactly right with automated thresholding.  
+  
+Simply drag-and-drop your image from the `nonLinear folder` and run this option to manually threshold. This will overwrite the original quantified table in the `analyzedTables folder`.  
 
 ## `HiPlex Overlay`  
-**The GUI for this function is incomplete!!!**   
+This option creates a representative overlay image of your binarized gene expression images.  
+  
+  
+**TO RUN:**
+-   Drag-and-drop your first gene image from the `overlay folder` into FIJI and select `HiPlex Overlay` from the menu  
 
-To run:
--   Drag-and-drop your first gene image from the `overlay folder` into FIJI and select `HiPlex Overlay` from the menu
--   When running, the order and colours of the images will print out in the `Log` box.  
+**WHAT HAPPENS:**  
+-   When running, images will be opaquely overlaid and the order and colours of the images will print out in the `Log` box.  
+  
+**OUTPUT:**  
 -   The image will save in the `overlay` folder as `TestCOMP.png`.  
 -   **In the future, there will be an option to change the colours and order of overlay images**  
+  
+   
 -   To create a manual overlay image: pseudocolour according to prefered image colours and and use FIJI's `Image` -> `Overlay...` -> `Add Image`
 
   
