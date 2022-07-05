@@ -119,7 +119,7 @@ This option takes individual gene expression images from the `nonLinear folder` 
 -   `Manual thresholding` allows one to manually select the threshold for each image (*useful in cases of autofluorescence*)  
 
 **OUTPUT:**  
--   Quantified tables for [`RUHi`]() analysis in `analyzedTables folder`  
+-   Quantified tables for [`RUHi`](https://github.com/cembrowskilab/RUHi) analysis in `analyzedTables folder`  
 -   Quantified image overlays for quality control in the `analyzedImages folder`  
   
 
