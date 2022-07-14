@@ -8,7 +8,7 @@ quantification.*
 ![](data/happyhip.png)
   
   
--   🔧 [INSTALLATION](#installation) 
+-   🔧 [INSTALLATION](#installation) *(for your local computer ONLY)*
     -   [Permanent](#permanent)
     -   [Temporary](#temporary)
 -   📂 [FILE CONVENTIONS](#file-conventions)  
@@ -25,7 +25,8 @@ quantification.*
 -   🐛 [BUGS AND ISSUES](#bugs-and-issues)  
   
 ## Installation  
-  
+  **DO NOT CHANGE OR ALTER THE TEAMSHARE APP!** THIS IS FOR YOUR LOCAL COMPUTER AND NON-TEAMSHARE USERS!   
+    
   ![](https://github.com/cembrowskilab/HiPlexMenu/blob/main/data/fiji.png)
   
 ### Permanent  
