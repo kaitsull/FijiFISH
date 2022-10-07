@@ -1,6 +1,6 @@
 HiPlex Menu *v3.5.0*
 ================  
-##### BY: KAITLIN SULLIVAN (UBC)    
+##### AUTHOR: [KAITLIN SULLIVAN](https://github.com/kaitsull) (UBC) _2019-Present_    
   
 *FIJI dropdown menu for mFISH registration, segmentation, and
 quantification.*   
@@ -25,7 +25,7 @@ quantification.*
 -   🐛 [BUGS AND ISSUES](#bugs-and-issues)  
   
 ## Installation  
-  **DO NOT CHANGE OR ALTER THE TEAMSHARE APP!** THIS IS FOR YOUR LOCAL COMPUTER AND NON-TEAMSHARE USERS!   
+  A note to Cembrowski Lab users: **DO NOT CHANGE OR ALTER THE TEAMSHARE APP!** THIS IS FOR YOUR LOCAL COMPUTER AND NON-TEAMSHARE USERS!   
     
   ![](https://github.com/cembrowskilab/HiPlexMenu/blob/main/data/fiji.png)
   
@@ -103,8 +103,8 @@ This option takes the registered DAPI images from the `nonLinear folder` and seg
     -    Segment based on DAPI signal from every round (to ensure registration in the z-axis)  
     -    Segment only Round 1 (not recommended)  
 -   Threshold Type:  
-    -     Automatic Thresholding  
-    -     Manual Thresholding (select threshold manually with a slider if some DAPI rounds look strange via Automatic Thresholding)    
+    -     `Automatic Thresholding`  
+    -     `Manual Thresholding`: (select threshold manually with a slider if some DAPI rounds look strange via Automatic Thresholding)    
 -   Segmented image is saved in an `analyzedImages folder`      
   
   
@@ -151,7 +151,7 @@ This option creates a representative overlay image of your binarized gene expres
 See the [RUHi Package](https://github.com/cembrowskilab/RUHi) for how to: visualize, dimensionally reduce, and cluster this data
 
 # Bugs and Issues  
-Take a screenshot of any error messages or debug windows you get and send them to *Kaitlin* (or open up an issue in the repo) 😺  
+Take a screenshot of the Log, the Debug Window, and any other relevant info or messages and send them to [*Kaitlin*](https://github.com/kaitsull) (or open up an issue in the repo) 😺  
 
 
 
