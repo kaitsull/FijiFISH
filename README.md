@@ -57,6 +57,8 @@ Tips for smooth image analysis:
 ### Image Files  
 Files used in the FIJI app **must be**:  
 - `.tif` files  
+- `8-bit` images  
+- Scale in microns
 - Named as such: **R%_XXX_genename**
     - % = the imaging round number
     - XXX = the fluorophore excitation wavelength  
