@@ -25,7 +25,7 @@ quantification.*
 -   🐛 [BUGS AND ISSUES](#bugs-and-issues)  
   
 ## Installation  
-  A note to Cembrowski Lab users: **DO NOT CHANGE OR ALTER THE TEAMSHARE APP!** THIS IS FOR YOUR LOCAL COMPUTER AND NON-TEAMSHARE USERS!   
+  A note to UBC TeamShare users: Skip installation and use the TeamShare app **DO NOT CHANGE OR ALTER THE TEAMSHARE APP!**    
     
   ![](https://github.com/cembrowskilab/HiPlexMenu/blob/main/data/fiji.png)
   
@@ -58,10 +58,10 @@ Tips for smooth image analysis:
 Files used in the FIJI app **must be**:  
 - `.tif` files  
 - `8-bit` images  
-- Scale in microns
-- Named as such: **R%_XXX_genename**
-    - % = the imaging round number
-    - XXX = the fluorophore excitation wavelength  
+- Scale in microns  
+- Named as such: **R#_XXX_Genename** (eg: R1_405_DAPI)
+    - # = the imaging round number
+    - XXX = the fluorophore excitation wavelength    
 - Files from *all rounds* must be saved in the same file folder   
     
 *Example file folder for analysis...*  
@@ -72,6 +72,8 @@ Files used in the FIJI app **must be**:
 ![](https://github.com/cembrowskilab/HiPlexMenu/blob/main/data/hiplex%20menu.png)  
   
 ## `Automated Run`  
+  
+**It is suggested to only use AutoRun once you are comfortable with each individual analysis step**  
 This option runs a full analysis from `Registration` -> `Segmentation -> `Quantification` with pauses for options (detailed further below) 
   
 **TO RUN:**    
@@ -81,7 +83,7 @@ This option runs a full analysis from `Registration` -> `Segmentation -> `Quanti
 -   All files and folders generated from `Registration`, `Segmentation`, `Quantification`, and `HiPlex Overlay`  
   
 ## `Registration`  
-This option takes the original images and registers them together by DAPI expression.  
+This option takes the original images and registers them together based on their DAPI expression.  
   
  **TO RUN:**
  -    Drag-and-drop `R1_405_DAPI.tif` into FIJI and select `Registration`.  
@@ -106,7 +108,12 @@ This option takes the registered DAPI images from the `nonLinear folder` and seg
     -    Segment only Round 1 (not recommended)  
 -   Threshold Type:  
     -     `Automatic Thresholding`  
-    -     `Manual Thresholding`: (select threshold manually with a slider if some DAPI rounds look strange via Automatic Thresholding)    
+    -     `Manual Thresholding`: (select threshold manually with a slider if some DAPI rounds look strange via Automatic Thresholding) 
+-   Dialation Value:
+    -      Suggested Value = `3 microns`  
+              -     This ensures cytoplasm (where most of the mRNA is located) is included in analysis 
+    -      For densly packed regions or nuclear expression only, change value to `0 microns`  
+      
 -   Segmented image is saved in an `analyzedImages folder`      
   
   
