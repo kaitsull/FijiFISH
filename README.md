@@ -107,8 +107,8 @@ This option takes the registered DAPI images from the `nonLinear folder` and seg
     -    Segment based on DAPI signal from every round (to ensure registration in the z-axis)  
     -    Segment only Round 1 (not recommended)  
 -   Threshold Type:  
-    -     `Automatic Thresholding`  
-    -     `Manual Thresholding`: (select threshold manually with a slider if some DAPI rounds look strange via Automatic Thresholding) 
+    -     Automatic Thresholding  
+    -     Manual Thresholding: (select threshold manually with a slider if some DAPI rounds look strange via Automatic Thresholding) 
 -   Dialation Value:
     -      Suggested Value = `3 microns`  
               -     This ensures cytoplasm (where most of the mRNA is located) is included in analysis 
