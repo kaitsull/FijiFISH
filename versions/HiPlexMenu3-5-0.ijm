@@ -1,4 +1,3 @@
-
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -63,7 +62,6 @@ function autoOpen (dir, prefix){
 
 //CHANNELS
 //returns channels in first round as an array (useful for 3plex FISH and incomplete rounds)
-//FIRST ROUND ONLY
 function channels(dir) {
 	fileList=getFileList(dir);
 
@@ -73,7 +71,6 @@ function channels(dir) {
 		//select only files beginning with R1_
 		if(substring(fileList[i], 0, 3)=="R1_"){
 			sub = substring(fileList[i], 3, 6);
-			//rc[0] = sub;
 			//exclude any DAPI signals
 			if(rc[0] == 0 && sub != 405){
 				rc[0] = sub;
@@ -206,10 +203,7 @@ function batchSplit(newDir, rnd, nms) {
 	setBatchMode(true);
 	print("Splitting and saving channels from Round " + rnd + "...");
 	run("Split Channels");
-	ch = newArray(nms.length);
-	for (i = 0; i < nms.length; i++) {
-		ch[i] = "C" + (i+1);
-	}
+	ch = newArray("C1", "C2", "C3", "C4", "C5");
 	
 	if(isOpen("Composite")){
 	close("Composite");
@@ -223,6 +217,7 @@ function batchSplit(newDir, rnd, nms) {
 		id = ch[i] + title;
 		selectWindow(id);
 		path = newDir + nms[i];
+		print(nms[i]);
 		saveAs("Tiff", path);
 		close(nms[i]);
 		print("Saved: " + nms[i]);
@@ -233,7 +228,6 @@ function batchSplit(newDir, rnd, nms) {
 
 //BATCHMERGE
 //combine images to be maxproj/cropped (hiplex only)
-//return an array of names
 function batchMerge(dir, rnd) { 
 	print("Opening and merging channels from Round "+ rnd +"...");
 	setBatchMode("hide");
@@ -256,26 +250,11 @@ function batchMerge(dir, rnd) {
 		mer[i+1] = getTitle(); 
 		print(mer[i+1]);
 	}
-	
-	//merge channels - hard coded to 3-5
-	if(chan.length == 4){
-		//sort the array of names to match Fiji's channel ordering convention
-		sorted = newArray(mer[4], mer[2], mer[0], mer[1], mer[3]);
-		run("Merge Channels...", "c1=" + mer[4] + " c2=" + mer[2]+ " c3=" + mer[0] + " c5=" + mer[1] + " c7=" + mer[3] + " create");
-	}
-	else if(chan.length == 3){
-		//sort the array of names to match Fiji's channel ordering convention
-		sorted = newArray(mer[2], mer[0], mer[1], mer[3]);
-		run("Merge Channels...", "c2=" + mer[2]+ " c3=" + mer[0] + " c5=" + mer[1] + " c7=" + mer[3] + " create");
-	}
-	else{
-		//sort the array of names to match Fiji's channel ordering convention
-		sorted = newArray(mer[2], mer[0], mer[1]);
-		run("Merge Channels...", "c2=" + mer[2]+ " c3=" + mer[0] + " c5=" + mer[1] + " create");
-	}
-	
+	//merge channels
+	run("Merge Channels...", "c1=" + mer[4] + " c2=" + mer[2]+ " c3=" + mer[0] + " c5=" + mer[1] + " c7=" + mer[3] + " create");
 	setBatchMode(false);
-	
+	//sort the array of names to match Fiji's channel ordering convention
+	sorted = newArray(mer[4], mer[2], mer[0], mer[1], mer[3]);
 	
 	//return array with names
 	return sorted;
@@ -317,7 +296,46 @@ function dapiMerge(dir, nl){
 	setBatchMode("exit and display");
 }
 
+//FINDMAX
+//findMax written by Mark Cembrowski
+function findMax() {
+	// identify number of columns in Results table
+	nCol=0;
+	isCol=true;
+	while(!isNaN(isCol)){
+		curCol="X"+nCol;
+		isCol=getResult(curCol,0); // returns Nan if doesn't exist
+		nCol++;	
+	}
+	nCol=nCol-1; // subtract one for last added value
 
+	// iterate over rows and columns of Results table to find row and column that have
+	// highest values. this reflects translation with highest correlation.
+	rMax=0; // refers to exact row value (i.e., inclusive of 0)
+	cMax=0; // refers to exact col value (i.e., "X_cMax")
+	curMax=0;
+	for (ii=0;ii<nResults;ii++){
+		for (jj=0;jj<nCol;jj++){
+			curRow=ii;
+			curCol="X"+jj;
+			curVal=getResult(curCol,curRow);
+			if(curVal>curMax){
+				curMax=curVal;
+				rMax=ii;
+				cMax=jj;
+			}
+		}
+	}
+	// the amount to translate by can be obtained for the indices of the row and column
+	// with maximum correlation. the deviation of these points from the centre point
+	// represent the amount to translate.
+	nRow=nCol;	// note images are square and thus ncol=nrow
+	xTrans=(cMax-nCol/2);
+	yTrans=(rMax-nRow/2);
+
+	xyTrans = newArray(xTrans, yTrans);
+	return xyTrans;
+}
 
 
 /////////////////////////////////Quantification Functions//////////////////////////////////////
@@ -359,7 +377,7 @@ function histPercentile(img, percent){
 	return(bin);
 }
 
-//QUANT *****ALTERED FUNCTION UPDATE DOCUMENTATION
+//QUANT
 //quantifies image (by image ID) either automatically (c>=1) or individually (c = 0)
 function quant(img, c, thresh, upper, sg){
 	
@@ -380,19 +398,16 @@ function quant(img, c, thresh, upper, sg){
 	if(c == 0){
 		//threshold and wait for user response
 		run("Threshold...");
-		waitForUser("Adjust the threshold slider & APPLY. Then, press OK in this window. \n Compare to autothreshold by selecting method: MaxEntropy"); 
+		waitForUser("Adjust the threshold slider & APPLY. Then, press OK in this window."); 
 	}
 	
 	//AUTOTHRESHOLDING
 	else {
 		if(c >= 1){	
-			//old version requiring thresh + upper from the histPercentile function
+			
 			//threshold the image
-			//setThreshold(thresh, upper);
-			//setOption("BlackBackground", true);
-
-			//new version
-			setAutoThreshold("MaxEntropy dark");
+			setThreshold(thresh, upper);
+			setOption("BlackBackground", true);
 			
 		}
 	}
@@ -479,11 +494,11 @@ macro "HiPlex Menu Tool - CfffD00D01D02D03D0dD0eD0fD10D11D12D16D17D18D19D1bD1dD1
 				
 				
 /////////////////////////////////////////REGISTRATION///////////////////////////////////////////////////								
-// SET UP (Throw errors and create necessary variables):
+// SET UP:
 				if (cmd == "Registration") {
-					//throw errors for incorrect number of images
+					//throw errors for incorrect naming
 					if(nImages == 0)
-						exit("No images open. Please open your first round DAPI image for registration.");
+						exit("No images open. Please open a DAPI image for segmentation.");
 					if(nImages > 1)
 						exit("Please open only the first round of DAPI imaging and close any other image windows.");			
 
@@ -493,10 +508,10 @@ macro "HiPlex Menu Tool - CfffD00D01D02D03D0dD0eD0fD10D11D12D16D17D18D19D1bD1dD1
 					chan = channels(dir);
 					nm1 = getTitle();
 		
-// STEP 1: MAX INTENSITY PROJECTION:
+// MAX or 3D:
 			//assume a single plane image
 					maxp = "sp";
-			//if the image is a stack - GUI will pop up for maxprojection
+			//if the image is a stack then GUI pop up for maxprojection
 					if(nSlices > 1){
 						maxDir = dir + "max" + File.separator;
 						File.makeDirectory(maxDir);
@@ -521,15 +536,10 @@ macro "HiPlex Menu Tool - CfffD00D01D02D03D0dD0eD0fD10D11D12D16D17D18D19D1bD1dD1
 					if(!endsWith(nm1, "DAPI.tif"))
 						exit("Incorrectly titled image or wrong image kind. \n Please open DAPI round 1 image: R1_405_DAPI.tif");
 
-//STEP 2: CROPPING IMAGES:
-					//images must be same size across rounds for adequate linear registration
+//CROPPING:
 					print("Measuring image sizes across rounds...");
-					//check for the smallest size image across rounds
 					cVal = sizeUp(dir);
-					
-					//all images must be the same width/height
-
-			//GUI FOR AUTO OR MANUAL CROP 
+					//all images must be the same width
 					if (cVal.length != 0) {
 						//create a directory to save cropped images
 						cropDir = dir + "crop" + File.separator;
@@ -553,14 +563,13 @@ macro "HiPlex Menu Tool - CfffD00D01D02D03D0dD0eD0fD10D11D12D16D17D18D19D1bD1dD1
 						}
 
 						
-//2A: AUTOCROP:
+//AUTOCROP:
 						if(cChoice == "Auto-crop"){
 						print(rnd);
 							//for each round, batch merge, create a rectangle, then split and save
 							for (i = 1; i <= rnd; i++) {
 								//batch mode open images and merge them
 								nms = batchMerge(dir, i);
-								Array.print(nms);
 
 								makeRectangle(0, 0, cVal[0], cVal[1]);
 								
@@ -568,11 +577,11 @@ macro "HiPlex Menu Tool - CfffD00D01D02D03D0dD0eD0fD10D11D12D16D17D18D19D1bD1dD1
 								run("Crop");
 								
 								//batch mode split channels and re-save cropped versions
-								batchSplit(cropDir, i, nms);
+								batchSplit(cropDir, rnd, nms);
 							}
 						}
 
-//2B: MANUAL CROP:
+//MANUAL CROP:
 						if (cChoice == "Manual crop") {
 							//for each round, batch merge, create a rectangle, then split and save
 							for (i = 1; i <= rnd; i++) {
@@ -585,15 +594,14 @@ macro "HiPlex Menu Tool - CfffD00D01D02D03D0dD0eD0fD10D11D12D16D17D18D19D1bD1dD1
 								//batch mode split channels and re-save cropped versions
 								print("Cropping images for Round " + i + "...");
 								run("Crop");
-								batchSplit(cropDir, i, nms);
+								batchSplit(cropDir, rnd, nms);
 							}
 						}
 					//make the croping directory the new, main directory
 					dir = cropDir;
 					}
 
-//STEP 3: LINEAR REGISTRATION:
-			//SET UP
+//REGISTRATION SET UP:
 					//make a directory for registered + analyzed images
 					regDir = dir + "regImages" + File.separator;
 					File.makeDirectory(regDir)
@@ -602,7 +610,7 @@ macro "HiPlex Menu Tool - CfffD00D01D02D03D0dD0eD0fD10D11D12D16D17D18D19D1bD1dD1
 					autoOpen(dir, "R1_405");
 					img1 = getImageID();
 					nm1 = getTitle();
-				//make 2^n x 2^n registration window
+					//make 2^n x 2^n registration window
 					makeWindow(img1, "Round1", 0);
 					r1=getImageID();
 				//counter for number of rounds registered
@@ -612,7 +620,7 @@ macro "HiPlex Menu Tool - CfffD00D01D02D03D0dD0eD0fD10D11D12D16D17D18D19D1bD1dD1
 				//eg array size 4 for 3 rounds
 					zChange = newArray((rnd-1)*2);
 					
-		//3A: REGISTRATION LOOP:
+//REGISTRATION LOOP:
 					while(cnt <= rnd){
 						rndNum = "R" + cnt + "_405";
 						autoOpen(dir, rndNum);
@@ -629,64 +637,62 @@ macro "HiPlex Menu Tool - CfffD00D01D02D03D0dD0eD0fD10D11D12D16D17D18D19D1bD1dD1
 						// write the new Image to a Results table.
 						run("Image to Results");
 						selectWindow("Result");
-						w = getWidth(); 
-						center = w/2;
 						close();
 
-		//3B: SEARCH HIGHEST PIXEL VALUE:
-					//Edited Oct 2022 for increase speed of analysis
-						//Array to save max values - index refers to Xcoord and value refers to Ycoord
-						maxVals = newArray(w);
-						//Array for pixel values
-						pix = newArray(w);
-						//Array to save indices of Xcoords within original array
-						indexMatch = newArray(w);
-						for (i = 0; i < w; i++) {
-							indexMatch[i] = i;
+//SEARCH HIGHEST PIXEL VALUE:
+						// identify number of columns in Results table. this should be rewritten as a helper
+						// function in later code.
+						nCol=0;
+						isCol=true;
+						while(!isNaN(isCol)){
+							curCol="X"+nCol;
+							isCol=getResult(curCol,0); // returns Nan if doesn't exist
+							nCol++;	
+						}
+						nCol=nCol-1; // subtract one for last added value
+						// iterate over rows and columns of Results table to find row and column that have
+						// highest values. this reflects translation with highest correlation.
+						rMax=0; // refers to exact row value (i.e., inclusive of 0)
+						cMax=0; // refers to exact col value (i.e., "X_cMax")
+						curMax=0;
+						for (ii=0;ii<nResults;ii++){
+							for (jj=0;jj<nCol;jj++){
+								curRow=ii;
+								curCol="X"+jj;
+								curVal=getResult(curCol,curRow);
+								if(curVal>curMax){
+									curMax=curVal;
+									rMax=ii;
+									cMax=jj;
+								}
+							}
 						}
 
-						selectWindow("Results");
-						//Iterate through rows
-						for (i = 0; i < w; i++) {
-							//Column name
-							xName = "X" + i;
-							xArr = Table.getColumn(xName);
-							//Find Maxima
-							cur = Array.findMaxima(xArr, 1);
-
-							//Save values
-							maxVals[i] = cur[0];
-							pix[i] = getResult(xName, maxVals[i]);
-						}
-
-						//sort by pixel value
-						Array.sort(pix, indexMatch, maxVals);
-
-						//highest pixel value coords
-						xVal = indexMatch[w-1];
-						yVal = maxVals[w-1];
-
-						//value to translate by
-						xTrans = xVal-center;
-						yTrans = yVal-center;
-						
+//TRANSLATION:
+						// the amount to translate by can be obtained for the indices of the row and column
+						// with maximum correlation. the deviation of these points from the centre point
+						// represent the amount to translate.
+						nRow=nCol;	// note images are square and thus ncol=nrow
+						xTrans=(cMax-nCol/2);
+						yTrans=(rMax-nRow/2);
 						run("Clear Results");
 	
-		//3C: TRANSLATE DAPI according to xTrans and yTrans:
+						// translate DAPI according to xTrans and yTrans
 						selectImage(img2);
 						if (maxp != "3D") {
 							print("Registering in X,Y...");
 							translate(xTrans, yTrans);
 						}
 
+
+
 					//save files
 						regImg = regDir + nm2 + "_registered.tif";
 						saveAs("Tiff",regImg);
 
-		//3D: TRANSLATE CHANNELS according to xTrans and yTrans:
+//TRANSLATE CHANNELS:
 						//translate in situ signals for subsequent rounds
-						setBatchMode(true);
-						for (i = 0; i < chan.length; i++) {
+						for (i = 0; i < 4; i++) {
 							//open
 							pref = chan[i];
 							file = "R" + cnt + "_" + pref;
@@ -698,7 +704,7 @@ macro "HiPlex Menu Tool - CfffD00D01D02D03D0dD0eD0fD10D11D12D16D17D18D19D1bD1dD1
 							saveAs("Tiff",regImg);
 							close();
 						}
-						//run("Clear Results");
+						run("Clear Results");
 						
 			//addition for autothreshold: include a file that holds the translation coords					
 						tf = regDir + "translate" + cnt + ".txt";
@@ -709,9 +715,8 @@ macro "HiPlex Menu Tool - CfffD00D01D02D03D0dD0eD0fD10D11D12D16D17D18D19D1bD1dD1
 					}
 					run("Close All");
 					
-					
-			//SAVE R1:
-				for (i = 0; i <= chan.length; i++) {
+//SAVE R1:
+				for (i = 0; i < 5; i++) {
 					if(i==0)
 						pref = 405;
 					else
@@ -727,15 +732,26 @@ macro "HiPlex Menu Tool - CfffD00D01D02D03D0dD0eD0fD10D11D12D16D17D18D19D1bD1dD1
 				}
 				//close remaining windows
 				run("Close All");
-				setBatchMode(false);
 
-//STEP 4: NONLINEAR REGISTRATION:
-	//(Rennie): Run bUnwarp
-	//(Code augemented by kaitlin sullivan for brevity and less user checks)
+//NONLINEAR:
+// (Rennie): Allow user to check rigid registration of DAPI images, and to run non-linear registration if they are not satisfied 
+//(Code augemented by kaitlin sullivan for brevity)
 
-			//4A: SAVE RIGID REGISTRATION OVERLAY
 				//merge rigid registration images
 				dapiMerge(regDir, false);
+
+				//get user input to perform elastic registration
+				if(!auto){
+					Dialog.create("Rigid Registration");
+					Dialog.addMessage("Would you like to apply non-linear registration to the images? \n (Note: this rigid registration DAPI overlay will be saved at regImages/composite)");
+					choices = newArray("Yes", "No"); 
+					Dialog.addChoice("Select one: ", choices, choices[0]);
+					Dialog.show();
+					choice = Dialog.getChoice();
+				}
+				else{
+					choice = "Yes";
+				}
 				
 				//save dapi overlay from linear reg
 				compDir = regDir+"composite"+File.separator;
@@ -743,88 +759,78 @@ macro "HiPlex Menu Tool - CfffD00D01D02D03D0dD0eD0fD10D11D12D16D17D18D19D1bD1dD1
 				saveAs("Tiff", compDir + "rigid_composite.tif");	
 				run("Close All");	
 
-			//4B: CREATE FOLDERS
-				//create new folder		
-				nlDir = regDir + "nonLinearReg" + File.separator;
-				File.makeDirectory(nlDir);
+// NON-LINEAR REG: Users chooses to proceed with non-linear registration
+				if (choice == "Yes"){
+					//create new folder		
+					nlDir = regDir + "nonLinearReg" + File.separator;
+					File.makeDirectory(nlDir);
 
-				//Copy R1 imgs to nonLinearReg file folder
-				print("Copying Round 1 channels before proceeding with non-linear registration...");
-				regFiles = getFileList(regDir);
-				for (n=0; n < regFiles.length; n++){
-					if (startsWith(regFiles[n],"R1")){
-						File.copy(regDir+regFiles[n], nlDir+regFiles[n]+"_NL.tif");
+					//Copy R1 imgs to nonLinearReg file folder
+					print("Copying Round 1 channels before proceeding with non-linear registration...");
+					regFiles = getFileList(regDir);
+					for (n=0; n < regFiles.length; n++){
+						if (startsWith(regFiles[n],"R1")){
+							File.copy(regDir+regFiles[n], nlDir+regFiles[n]+"_NL.tif");
+						}
 					}
-				}
-			//4C: REGISTRATION LOOP
-				// Register all subsequent rounds with round 1, saving the transformation from RX to R1 (for X=2,3...)
-				print("Beginning non-linear registration...");
-				//open R1 image
-				autoOpen(regDir, "R1_405");
-				target=getTitle();
-				rnd = numRound(regDir);
-				//new addition: keep the scale by saving original image scale
-				selectWindow(target);
-				getPixelSize(unit, pixelWidth, pixelHeight);
+
+// Register all subsequent rounds with round 1, saving the transformation from RX to R1 (for X=2,3...)
+					print("Beginning non-linear registration...");
+					//open R1 image
+					autoOpen(regDir, "R1_405");
+					target=getTitle();
+					rnd = numRound(regDir);
 					
-				for (m = 2; m <= rnd; m++) {
-					//open DAPI from each round
-					print("Opening DAPI image for Round" +m+ "...");
-					source = "R" + m + "_405";
-					autoOpen(regDir, source);
-					curDAPI = getTitle();
-					transf_file = nlDir+curDAPI+"_transf.txt";
+					for (m = 2; m <= rnd; m++) {
+						//open DAPI from each round
+						print("Opening DAPI image for Round" +m+ "...");
+						source = "R" + m + "_405";
+						autoOpen(regDir, source);
+						curDAPI = getTitle();
+						transf_file = nlDir+curDAPI+"_transf.txt";
 
-					//run nonlinear registration
-					print("Now registering R"+ m +" DAPI to R1 DAPI...");
-					run("bUnwarpJ","source_image=&curDAPI target_image=&target registration=Mono image_subsample_factor=0 initial_deformation=[Very Coarse] final_deformation=[Super Fine] divergence_weight=0.1 curl_weight=0.1 landmark_weight=0 image_weight=1 consistency_weight=10 stop_threshold=0.01 save_transformations save_direct_transformation=["+transf_file+"]");
-					selectWindow("Registered Source Image");
-					run("Stack to Images");
-					selectWindow("Registered Source Image");
-					run("8-bit");
+						//run nonlinear registration
+						print("Now registering R"+ m +" DAPI to R1 DAPI...");
+						run("bUnwarpJ","source_image=&curDAPI target_image=&target registration=Mono image_subsample_factor=0 initial_deformation=[Very Coarse] final_deformation=[Super Fine] divergence_weight=0.1 curl_weight=0.1 landmark_weight=0 image_weight=1 consistency_weight=10 stop_threshold=0.01 save_transformations save_direct_transformation=["+transf_file+"]");
+						selectWindow("Registered Source Image");
+						run("Stack to Images");
+						selectWindow("Registered Source Image");
+						run("8-bit");
+						saveAs("Tiff",nlDir + curDAPI +"_NL.tif");
 
-					//new addition 2022: reclaim lost scale prior to saving
-					run("Set Scale...", "distance=1 known=pixelWidth unit=unit");
-					saveAs("Tiff",nlDir + curDAPI +"_NL.tif");
-
-					//Close all windows but target image (R1 DAPI)
-					selectWindow(target);
-					close("\\Others");
-						
-					print("Applying transformation to channel images...");
-					setBatchMode(true);
-					//open each channel
-					for (k=0; k<chan.length; k++){			
-						curChan = "R" + m + "_" + chan[k];
-						autoOpen(regDir, curChan);
-						channel_image = getTitle();
-
-						//run dapi transform
-						call("bunwarpj.bUnwarpJ_.elasticTransformImageMacro", regDir+target, regDir+channel_image,transf_file, nlDir+channel_image+"_NL.tif");
-			   			selectWindow(target);
-			   			//new addition 2022: reclaim lost scale
-						run("Set Scale...", "distance=1 known=pixelWidth unit=unit");
+						//Close all windows but target image (R1 DAPI)
+						selectWindow(target);
 						close("\\Others");
-					}
-				}
-				run("Close All");
-				setBatchMode(false);
-				
-			//4D: SAVE COMPOSITES AND GIVE USER OUTPUT
-				print("Creating final overlay of nonlinearly registered DAPIs.");
-				dapiMerge(nlDir, true);
+						
+						print("Applying transformation to channel images...");
+						//open each channel
+						for (k=0; k<4; k++){			
+							curChan = "R" + m + "_" + chan[k];
+							autoOpen(regDir, curChan);
+							channel_image = getTitle();
 
-				if(!auto){
-					Dialog.create("Elastic Registration Composite");
-					Dialog.addMessage("The following composite shows the elastic registration of all DAPI images. \n \n (Note: this image can be found at regImages/composite)");
-					Dialog.show();
-				}
+							//run dapi transform
+							call("bunwarpj.bUnwarpJ_.elasticTransformImageMacro", regDir+target, regDir+channel_image,transf_file, nlDir+channel_image+"_NL.tif");
+			      			selectWindow(target);
+							close("\\Others");
+						}
+					}
+					run("Close All");
+					//make composite
+					print("Creating final overlay of nonlinearly registered DAPIs.");
+					dapiMerge(nlDir, true);
+
+					if(!auto){
+						Dialog.create("Elastic Registration Composite");
+						Dialog.addMessage("The following composite shows the elastic registration of all DAPI images. \n \n (Note: this image can be found at regImages/composite)");
+						Dialog.show();
+					}
 					
-				//save image
-				selectImage("Composite");
-				saveAs("Tiff", compDir+"elastic_composite.tif");
-				
-			
+					
+					//save image
+					selectImage("Composite");
+					saveAs("Tiff", compDir+"elastic_composite.tif");
+				}
 				run("Close All");
 				close("Results");
 				if(!auto)
@@ -833,15 +839,15 @@ macro "HiPlex Menu Tool - CfffD00D01D02D03D0dD0eD0fD10D11D12D16D17D18D19D1bD1dD1
 					print("Beginning segmentation...");
 					autoOpen(nlDir, "R1_405_DAPI.tif");
 					cmd = "Segmentation";
-				} 			
+				} 
+					
 			}
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 //SEGMENTATION CODE				
-				if (cmd == "Segmentation"){
+				if (cmd == "Segmentation") {
 
-	//STEP 1: SET UP
-		//throw error if no images open
+					//throw error if no images open
 					if(nImages == 0){
 						exit("No images open. \n Please open a DAPI image for segmentation.");
 					}
@@ -849,91 +855,59 @@ macro "HiPlex Menu Tool - CfffD00D01D02D03D0dD0eD0fD10D11D12D16D17D18D19D1bD1dD1
 					if(nImages > 1){
 						exit("Please open only one DAPI image and close any other image windows.");
 					}
-		//set up important variables
+//NEW: check for zstack in DAPI signal
+					zstack = false;
+					if(nSlices >1){
+						zstack = true;
+					}
+
+					
+					// Mark Cembrowski, UBC, 2019
+					//run("Set Scale...", "distance in pixels=0 known distance=0 pixel aspect ratio=1 unit of length=pixel");
+					
+					areaThres=30; 	// area threshold. discard ROIs with pixel areas below this value.
+					areaThresLarge=150;  // area threshold. discard ROIs with pixel areas above this value.
+					dilationVal=3; 	// dilation amount, in pixels, to use for all kept nuclei.
+
 					dir = getDirectory("image");
 					nround = numRound(dir);
 					name=getTitle;
+					
+
+					//throw error if image is not DAPI
+					//if(substring(name, 7, 11)!= "DAPI"){
+					//	exit("Incorrect image or incorrectly titled image. \n Please open a DAPI image. (Naming convention: R#_405_DAPI.tif)");
+					//}
+					
 					imgDir = dir + "analyzedImages" + File.separator;
 					File.makeDirectory(imgDir);
 					tabDir = dir + "analyzedTables" + File.separator;
 					File.makeDirectory(tabDir);
 
-	//STEP 2: CHECK FOR SEGMENTATION MARKER (DAPI VS NISSL)
-					//create GUI
-					types = newArray("DAPI", "Nissl");
-					
-					Dialog.create("Segmentation Type");
-					Dialog.addMessage("Segmentation Marker:");
-					Dialog.addChoice("Segmentation Type: ", types);
-					Dialog.show();
-
-					//get value
-					marker = Dialog.getChoice();
-
-					//Run DAPI specific pre-processing
-					if(marker == types[0]){
-						run("Subtract Background...", "rolling=50");
+//2D-3D REG
+					//Gaussian blur
+					if(zstack){
+						run("Gaussian Blur 3D...", "x=2 y=2 z=2");
+					}
+					else{ 
 						run("Gaussian Blur...", "sigma=2");
 					}
-					//Run Nissl specific pre-processing
-					if(marker == types[1]){
-						run("Smooth");
-						run("Gaussian Blur...", "sigma=4");
-						//ensure only the Nissl round is segmented
-						seg = newArray(1);
-						seg[0] = 1;
-					}
 
-	
-					//if only one round, segment that alone
+//select r1 or 3dreg
+print(nround);
 					if(nround<=1){
-						seg = newArray(1);
-						seg[0] = 1;
+						seg="Round 1 Only";
 					}
-
-		//STEP 3: SELECT ROUNDS TO SEGMENT
 					if(nround>1){
-						Dialog.create("Select Rounds to Segment");
-						Dialog.addMessage("Select all DAPI rounds for z-stack registration, unless certain rounds have poor signal! \n (NOTE: Round 1 will ALWAYS be included)");
-						
-						//create and fill arrays to hold checkbox values
-						labels = newArray(nround-1);
-						defaults = newArray(nround-1);
-						for (i = 0; i < nround-1; i++) {
-							labels[i] = "Round " + (i+2);
-							defaults[i] = true; 
-						}
-						
-						//fill values into GUI
-						Dialog.addCheckboxGroup(nround, 1, labels, defaults);
+						Dialog.create("Segmentation Type");
+						Dialog.addMessage("Would you like to segment across rounds or on round 1 only? \n (NOTE: segmenting on round 1 only is not recommended as differences in z-stacks across rounds can affect quantification.)");
+						Dialog.addChoice("Segmentation Type: ", newArray("Normal Segmentation", "Round 1 Only"));
 						Dialog.show();
 						
-						//get user input and save into a new array seg
-						//array for rounds included
-						seg = newArray(1);
-						seg[0] = 1;
-						
-						//round counter
-						rndCnt = 2;
-
-						//iterate through user input and add to seg
-						for (i = 1; i < nround; i++) {
-							//check if round is included
-							include = Dialog.getCheckbox();
-							if(include){
-								//add round number to the seg array
-								curRound = newArray(1);
-								curRound[0] = rndCnt;
-								seg = Array.concat(seg, curRound);
-							}
-							//increase round after each iteration
-							rndCnt++;
-						}
-						//print(seg.length);
+						seg=Dialog.getChoice();
 					}
-					
-		//STEP 4: MANUALLY OR AUTOMATICALLY ADJUST THRESHOLD
-					if(seg.length >= 1){
+//MANUALLY OR AUTOMATICALLY ADJUST DAPI
+					if(seg=="Normal Segmentation"){
 						//Create a new GUI
 						Dialog.create("Thresholding Type");
 						Dialog.addMessage("Would you like to automatically or manually threshold DAPI signals?");
@@ -942,137 +916,188 @@ macro "HiPlex Menu Tool - CfffD00D01D02D03D0dD0eD0fD10D11D12D16D17D18D19D1bD1dD1
 						
 						thr=Dialog.getChoice();
 						
-				//4A: MANUALLLY THRESHOLD
+			//MANUALLLY SEGMENT
 						if(thr=="Manual"){
 							quant(name,0,0,0,true);
 							run("Convert to Mask");
 							name = getTitle();
-							print("Thresholding "+name+"...");
-						}
-				//4B: AUTOTHRESHOLD		
-						if(thr=="Automatic"){
-							//old way = using histPercentile function
-							setAutoThreshold("Huang dark");
-							//setOption("BlackBackground", true);
-							run("Convert to Mask");
-							print("Thresholding "+name+"...");
-						}
+							print(name);
 
 
-						//4Ai: ITERATE THROUGH INCLUDED ROUNDS if seg > 1
-							for (i = 1; i < seg.length; i++) {
-								//Open subsequent rounds
-								pref = "R" + seg[i] + "_405_DAPI.tif";
-								//print("pref="+pref);
+							//ITERATE THROUGH ROUNDS
+							for (i = 2; i <= nround; i++) {
+								//open subsequent rounds
+								pref = "R" + i + "_405_DAPI.tif";
+								print("pref="+pref);
 								autoOpen(dir, pref);
 			 					cur = getTitle();
 			 					//print(cur);
-
-			 					//Pre-process
-			 					run("Subtract Background...", "rolling=50");
 								run("Gaussian Blur...", "sigma=2");
 							
-								//threshold the image manually
-								if(thr=="Manual"){
+						
+								//threshold the image
 									quant(name,0,0,0,true);
 									run("Convert to Mask");
-									name = getTitle();
-									print("Thresholding "+name+"...");
-								}
-								//threshold the image automatically
-								if(thr=="Automatic"){
-									setAutoThreshold("Huang dark");
-									//setOption("BlackBackground", true);
-									run("Convert to Mask");
-									name = getTitle();
-									print("Thresholding "+name+"...");
-								}
+									cur = getTitle();
+									print(cur);
 							
 								//multiply first two rounds
-								if(i==1){
+								if(i==2){
 									imageCalculator("Multiply create", name, cur);
 									prod = getTitle();
 									print(prod);
 									close("\\Others");
 								}
 								//subsequent rounds
-								if(i>=2){
+								if(i>2){
 									imageCalculator("Multiply create", prod, cur);
 									prod = getTitle();
 									print(prod);
 									close("\\Others");
 								}
-							//print(i);	
+							}	
+						}
+						
+		//AUTOSEGMENT
+						else{
+							thresh = histPercentile(name, 0.85);
+							setThreshold(thresh, 255);
+							//setOption("BlackBackground", true);
+							run("Convert to Mask");
+							name = getTitle();
+							print(name);
+
+
+							//ITERATE THROUGH ROUNDS
+							for (i = 2; i <= nround; i++) {
+								//open subsequent rounds
+								pref = "R" + i + "_405_DAPI.tif";
+								print("pref="+pref);
+								autoOpen(dir, pref);
+			 					cur = getTitle();
+			 					//print(cur);
+								run("Gaussian Blur...", "sigma=2");
+							
+						
+								//threshold the image
+								thresh = histPercentile(cur, 0.85);
+								setThreshold(thresh, 255);
+								//setOption("BlackBackground", true);
+								run("Convert to Mask");
+								cur = getTitle();
+								print(cur);
+							
+								//multiply first two rounds
+								if(i==2){
+									imageCalculator("Multiply create", name, cur);
+									prod = getTitle();
+									print(prod);
+									close("\\Others");
+								}
+								//subsequent rounds
+								if(i>2){
+									imageCalculator("Multiply create", prod, cur);
+									prod = getTitle();
+									print(prod);
+									close("\\Others");
+								}
 							}
 						}
-						//user selected no rounds
-						else{
-							exit("No rounds selected to segment.");
+					}
+					
+					
+				//ROUND 1 ONLY	
+					if(seg=="Round 1 Only"){
+						run("8-bit");
+						run("Threshold...");
+						setThreshold(40, 255);
+						waitForUser("adjust top threshold slider, hit Set->ok in THAT window, then hit ok HERE");
+						getThreshold(imageThres,thresHi);
+						setThreshold(imageThres, thresHi);
+						setOption("BlackBackground", true);
+						//stack add
+						if(zstack){
+							run("Convert to Mask", "method=Default background=Dark black");
 						}
+						else{
+							run("Create Mask");
+						}
+					}
 
-					
-					
-			//5: ADD ROIS AND EXPAND
-					//run watershed to separate clusters of nuclei
-					run("Watershed", "stack"); // added Tim June 26 2019, helps with segmentation
-
-					//select ROI for analysis
+			// Binarize image and add segmented nuclei to ROI Manager.
 					waitForUser("Draw an ROI with polygon or rectangle tool, then hit OK here.");// added Tim, limit analysis to a specific ROI
 					run("Add Selection...");
 					run("To ROI Manager");
 					run("Remove Overlay");
-
-					//select ROIs between 30-250 microns
+					//run("Convert to Mask");
+					run("Watershed", "stack"); // added Tim June 26 2019, helps with segmentation
+					//stack add
+					if(zstack){
+							run("Convert to Mask", "method=Default background=Dark black");
+						}
+						else{
+							run("Create Mask");
+						}
 					run("From ROI Manager");
 					roiManager("Select", 0);
-					run("Analyze Particles...", "size=30-250 display clear add");
+					if(zstack){
+						run("Analyze Particles...", "clear add stack");
+					}
+					else{
+						run("Analyze Particles...", "clear add");
+					}
 
-			//6: USER INPUT FOR DILATION VALUE
-					Dialog.create("Dialate ROIs");
-					Dialog.addSlider("Dialation: in microns", 0, 7, 3);
-					Dialog.show();
-
-					dilationVal = Dialog.getNumber();
-
-			
-					//Dilate ROIs by user-input
+					// Delete small areas; dilate areas that pass threshold.
 					run("Clear Results");
 					totRois = roiManager("count");
-
-					//Set measurements to be saved to results
-					run("Set Measurements...", "area mean centroid perimeter fit shape feret's area_fraction redirect=None decimal=3");
-
-					//Englarge ROIs
+					run("Set Measurements...", "area redirect=None decimal=3");
 					for (mm=totRois-1;mm>-0.5;mm--){
 						roiManager("Select",mm);
 						run("Measure");
+						totArea=getResult("Area");
+						if(totArea<areaThres){
+							roiManager("Delete");
+							//roiManager("Update");
+						}
+						else{
 						run("Enlarge...","enlarge=dilationVal");
 						roiManager("Update");	
+						}
 					}
 
-					
-			//6: UPDATE USER AND SAVE
+					//save ROIs
+					//roiManager("Save", tabDir + "RoiSet.zip");
+					finRois = roiManager("count");
+
+					// Set measurement parameters for all dilated ROIs. Measure results.
+					// Added Tim June 26, 2019 - Centroid and stack values for localization of cells
+					run("Set Measurements...", "area mean min shape centroid stack redirect=None decimal=3");
+					roiManager("measure");
+
+					total = "Total number of segmented nuclei: " + finRois;
+					print(total);
+
+					//save ROIs
+					roiManager("Save", tabDir + "RoiSet.zip");
+					finRois = roiManager("count");
+
 					//print updates:
 					print("Saving image stack, please wait...");
-					
-					roiManager("measure");
-					print("Nuclei Segmented: " + totRois);
-					//save ROISET for quant
-					roiManager("Save", tabDir + "RoiSet.zip");
-					//save results file
-					resultsFile = tabDir + name +  "_segmented.csv";
-					saveAs("Results",resultsFile);
-					run("Clear Results");
+					//saveFiles(name, 1, imgDir, tabDir, "segmented");
+
+					// Save results
+					//resultsFile = tabDir + name +  "_segmented.csv";
+					//saveAs("Results",resultsFile);
+					//run("Clear Results");
+
 
 					// Close down all unnecessary windows.
 					// Note ROIs are left behind for use by other downstream macros
 					run("Close All");
 					close("Results");
 					close("Threshold");
-
-					//Update user or continue to next
 					if(!auto)
-						exit("Segmentation Complete! \n To quantify, open the first in situ channel image and run Quantification.");
+						exit("Segmentation Complete! \n Please keep ROI Manager window open for use in the Quantification Macro. \n To quantify, open the first in situ channel image and run Quantification.");
 					else{
 						print("Beginning quantification");
 						autoOpen(dir, "R1_488");
@@ -1083,7 +1108,6 @@ macro "HiPlex Menu Tool - CfffD00D01D02D03D0dD0eD0fD10D11D12D16D17D18D19D1bD1dD1
 //QUANTIFICATION CODE			
 				if (cmd == "Quantification" || cmd == "Single Channel Quantification") {
 
-		//1: SETUP AND ERROR HANDLING
 					//throw error if no images or more than one image open
 					if(nImages == 0)
 						exit("No images open.");
@@ -1096,9 +1120,8 @@ macro "HiPlex Menu Tool - CfffD00D01D02D03D0dD0eD0fD10D11D12D16D17D18D19D1bD1dD1
 
 					//throw error if not a channel
 					if (substring(name, 7, 11)=="DAPI") 
-						exit("Probe channel image required.");
-
-						
+						exit("Channel image required.");
+					
  					//create new file directories for the image masks and the quantification tables
 					imgDir = dir + "analyzedImages" + File.separator;
 					File.makeDirectory(imgDir);
@@ -1107,9 +1130,9 @@ macro "HiPlex Menu Tool - CfffD00D01D02D03D0dD0eD0fD10D11D12D16D17D18D19D1bD1dD1
 					ovDir = dir + "overlay" + File.separator;
 					File.makeDirectory(ovDir);
 
-			//1B: OPEN ROIS	
 					//open segmented ROIs
 					run("ROI Manager...");
+
 					roi = tabDir + "RoiSet.zip";
 					
 					//throw error if no ROIs saved
@@ -1118,78 +1141,113 @@ macro "HiPlex Menu Tool - CfffD00D01D02D03D0dD0eD0fD10D11D12D16D17D18D19D1bD1dD1
 					if(roiManager("count")==0)
 						roiManager("Open", roi);
 					
-		//2A: SINGLE CHANNEL QUANTIFICATION - always manual
+					//manual quantification
 					if (cmd == "Single Channel Quantification") {
 						// Clear results, in case populated from other analyses.
 						run("Clear Results");
-						//pre-process
-						//remove HyD noise
-						run("Remove Outliers...", "radius=1 threshold=100 which=Bright");
-						//prep for histogram
-						run("Subtract Background...", "rolling=50");
-
-						//threshold
 						quant(name, 0, 0, 0, false);
 						saveFiles(name, ovDir, imgDir, tabDir, "quantification");
 						run("Close All");
-					}		
-					
-		//2B: FULL ROUND QUANTIFICATION
+					}
+
+//PREFILTERING		
+
 					else{
-						//Save important variables:
-						//directory
-						dir = getDirectory("image");
-						//array holding channels
-						numChnl = channels(dir);
-						//number of rounds
-						totRnd = numRound(dir);	
-						//counter 	
-						cnt = 0;
-						//total number of times to iterate
-						tot = (totRnd*numChnl.length);
+					//save dir and channels
+					dir = getDirectory("image");
+					chan = channels(dir);
+					rnd = numRound(dir);
+					
+					//close();
 
-		//3: SELECT METHOD OF QUANTIFICATION
-						Dialog.create("Select Threshold Method...");
-						Dialog.addMessage("Choose a method of thresholding: ");
-						cc = newArray("Manual","Automatic");
-						Dialog.addChoice("Method: ", cc, cc[1]);
 
-						Dialog.show();
-						opt = Dialog.getChoice();
+					//GUI
+					//Dialog.create("Prefiltering");
+					//Dialog.addMessage("Would you like to prefilter any noisy images? \n \n (Note: This step only needs to be performed once. Do not prefilter multiple times.)");
 
-				//3A: AUTOMATIC THRESHOLDING		
+					//get file names
+					//files = getFileList(dir);
+					//channelfiles = newArray(rnd*chan.length);
+					//j = 0;
+					//for (i = 0; i < files.length; i++) {
+						//if((indexOf(files[i], "DAPI")<0) && (endsWith(files[i], ".tif"))){
+							//channelfiles[j] = files[i];
+							//j++;
+						//}
+					//}
+					//channelfiles = Array.sort(channelfiles);
 
-					//Iterate through all channels
+					//present file names in gui
+					//for (i = 0; i < channelfiles.length; i++) {
+						//Dialog.addCheckbox(channelfiles[i], false);
+					//}
+					//Dialog.show();
+
+//save values
+
+					//for (i = 0; i < channelfiles.length; i++) {
+						//tf = Dialog.getCheckbox();
+						//if(tf == true){
+							//new directory
+							//open(dir + channelfiles[i]);
+							//run("Remove Outliers...", "radius=1 threshold=40 which=Bright");
+							//saveAs("Tiff", (dir + channelfiles[i]));
+							//close();
+						//}
+					//}
+					
+					
+					//open(dir + channelfiles[0]);
+					
+//AUTOQUANT			
+
+					cnt = 0;
 					rnd = 1;
+					totRnd = numRound(dir);
+					numChnl = channels(dir);
+					tot = (totRnd*numChnl.length);
+
+//NEW								//choose method of thresholding
+			Dialog.create("Select Threshold Method...");
+			Dialog.addMessage("Choose a method of thresholding: ");
+			cc = newArray("Manual","Automatic");
+			Dialog.addChoice("Method: ", cc, cc[1]);
+
+			Dialog.show();
+			opt = Dialog.getChoice();
+
+			//histogram percentile
+			if(opt == cc[1]){
+				Dialog.create("Select Threshold...");
+				Dialog.addMessage("Select a value from 0-100% of the the histogram tail.");
+				Dialog.addNumber("Threshold Value: ", 0.998);
+
+				Dialog.show();
+				val = Dialog.getNumber();
+				//get the optimal thresholding value
+				img = getTitle();
+				thresh = histPercentile(img, val);
+				upper = 255;
+			}
+			
+	//HIPLEX
 					if(totRnd >1){
 						//auto-open all channels
 						for (i = 0; i <= tot; i++) {
+
 							// Clear results, in case populated from other analyses.
 							run("Clear Results");
 
-							//pre-process
-							if(substring(name, 3, 6)==750){
-								run("Smooth");
-							}
-							//remove HyD noise
-							run("Remove Outliers...", "radius=1 threshold=100 which=Bright");
-							//prep for histogram
-							run("Subtract Background...", "rolling=50");
-							
 							//Auto or Manual Threshold
 							if(opt==cc[1]){
-								//old way
-								quant(name, rnd, 1, 1, false);
+								quant(name, rnd, thresh, upper, false);
 							}
 							else{
 								quant(name, 0, 0, 0, false);
 							}
-
-							//Save files
+							
 							saveFiles(name, ovDir, imgDir, tabDir, "quantification");
 							run("Close All");
-
-							
 							//again, this assumes that there are 4 channels + DAPI per round
 							if (i%numChnl.length == 0 && i != 0){
 								cnt = 0;
@@ -1204,7 +1262,7 @@ macro "HiPlex Menu Tool - CfffD00D01D02D03D0dD0eD0fD10D11D12D16D17D18D19D1bD1dD1
 							}
 						}
 					}
-		//SINGLE ROUND QUANTIFICATION
+		//3PLEX
 					if(totRnd == 1){
 						for (i = 0; i < numChnl.length; i++) {
 							quant(name, 1, thresh, upper, false);
@@ -1219,7 +1277,7 @@ macro "HiPlex Menu Tool - CfffD00D01D02D03D0dD0eD0fD10D11D12D16D17D18D19D1bD1dD1
 						}
 					}
 
-		//4: FINISH THINGS UP
+					
 					run("Close All");
 					close("Results");
 					close("Threshold");
