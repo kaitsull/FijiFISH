@@ -62,9 +62,9 @@ Files used in the FIJI app **must be**:
 - `.tif` files  
 - `8-bit` images  
 - Scaled in microns  
-- Named as such: **R#_XXX_Genename** (eg: R1_405_DAPI)
-    - # = the imaging round number
-    - XXX = the fluorophore excitation wavelength    
+- Named as such: **R#_XXX_Genename** (eg: `R1_405_DAPI`)
+    - #= the imaging round number
+    - XXX= the fluorophore excitation wavelength    
 - Files from *all rounds* must be saved in the same file folder   
     
 *Example file folder for analysis...*  
@@ -101,12 +101,11 @@ This option takes the registered DAPI images from the `nonLinear` folder and seg
     -    Segment based on DAPI signal from every round (to ensure registration in the z-axis)  
     -    If there is a round where DAPI is not segmentable, uncheck it
 -   Threshold Type:  
-    -     Automatic Thresholding  
-    -     Manual Thresholding: (select threshold manually with a slider if some DAPI rounds look strange via Automatic Thresholding) 
+    -    Automatic Thresholding  
+    -    Manual Thresholding: (select threshold manually with a slider if some DAPI rounds look strange via Automatic Thresholding) 
 -   Dialation Value:
-    -      Suggested Value = `3 microns`  
-              -     This ensures cytoplasm (where most of the mRNA is located) is included in analysis 
-    -      For densly packed regions or nuclear expression only, change value to `0 microns`  
+    -    Suggested Value = `3 microns`  
+    -    For densly packed regions or nuclear expression only, change value to `0 microns`  
       
 -   Segmented image is saved in an `analyzedImages` folder
 -   Segmented ROIs are saved in `analyzedTables` folder      
