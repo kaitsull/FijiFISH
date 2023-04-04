@@ -25,7 +25,8 @@ quantification.*
 -   🐛 [BUGS AND ISSUES](#bugs-and-issues)  
   
 ## Installation  
-  A note to UBC TeamShare users: Skip installation and use the TeamShare app **DO NOT CHANGE OR ALTER THE TEAMSHARE APP!**    
+  A note to UBC TeamShare users:  
+  Skip installation and use the TeamShare app **DO NOT CHANGE OR ALTER THE TEAMSHARE APP!**    
     
   ![](https://github.com/cembrowskilab/HiPlexMenu/blob/main/data/fiji.png)
   
