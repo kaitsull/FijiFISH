@@ -36,8 +36,9 @@ quantification.*
 2.  Open your FIJI app  
 3.  *Plug-ins* -> *Macros* -> *Startup Macros*  
 4.  Paste the code at the very bottom of the StartupMacros.txt  
-5.  Close and restart your FIJI app  
-6.  You will now see the happy hippocampus icon in your FIJI!
+5.  Download LUT files and put in the FIJI lut folder (only if you want to use the HiPlex Overlay function)  
+6.  Close and restart your FIJI app  
+7.  You will now see the happy hippocampus icon in your FIJI!
   
 ### Temporary  
 *This installation is useful for using the menu when on shared computers or read-only versions of FIJI. You will need to re-install the macro each time you open a new FIJI session.*  
@@ -46,12 +47,13 @@ quantification.*
 3.  From the top menu select: *Plug-ins* -> *Macros* -> *Install*  
 4.  Select `Menu_v3-0-0.ijm` from wherever you have it saved  
 5.  You will now see the happy hippocampus icon in your FIJI for the remainder of your session. 
+6.  HiPlex Overlay currently does not work on read-only versions of FIJI   
 
 
 ## File Conventions  
 ### ROIs  
 Tips for smooth image analysis:
-- Save ROI for first round and use for subsequent rounds (differences in polygons may affect nonlinear registration)  
+- Save ROI for first round on the microscope and use re-load it for subsequent rounds (differences in polygons may affect nonlinear registration)  
 - Ensure same zoom and resolution across rounds  
 - Be wary of high laser intensities (autofluorescence will affect automated thresholding)  
 
@@ -59,7 +61,7 @@ Tips for smooth image analysis:
 Files used in the FIJI app **must be**:  
 - `.tif` files  
 - `8-bit` images  
-- Scale in microns  
+- Scaled in microns  
 - Named as such: **R#_XXX_Genename** (eg: R1_405_DAPI)
     - # = the imaging round number
     - XXX = the fluorophore excitation wavelength    
@@ -129,7 +131,7 @@ This option takes individual gene expression images from the `nonLinear` folder 
 ## `Single Channel Quantification`  
 This option allows one to manually threshold and quantify a single channel that may not look exactly right with automated thresholding.  
   
-Simply drag-and-drop your image from the `nonLinear` folder and run this option to manually threshold. This will overwrite the original quantified table in the `analyzedTables` folder.  
+Simply drag-and-drop your image from the `nonLinear` folder and run this option to manually threshold. This will overwrite the original quantified table in the `analyzedTables` folder.   
 
 ## `HiPlex Overlay`  
 This option creates a representative overlay image of your binarized gene expression images.  
