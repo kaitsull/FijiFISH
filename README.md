@@ -71,12 +71,20 @@ Files used in the FIJI app **must be**:
 *Example file folder for analysis...*  
 ![](https://github.com/cembrowskilab/HiPlexMenu/blob/main/data/max.png)
 
-# Image Analysis  
-*HiPlex Menu Options...*  
-![](https://github.com/cembrowskilab/HiPlexMenu/blob/main/data/hiplex%20menu.png)  
-  
+*Example output file folder structure __after analysis is complete__...*  
+├── `max`
+   └── `crop`
+        └── `regImages`
+          ├── `composite` DAPI overlays from registration
+          └── `nonLinear`
+              ├── `analyzedImages` binarized images with ROIs
+              ├── `analyzedTables` tables for [RUHi](https://github.com/cembrowskilab/RUHi)
+              ├── `correctedImages` images with background correction
+              └── `overlay` binarized images
 
-  
+
+# Image Analysis  
+ 
 ## `Registration`  
 This option takes the original images and registers them together based on their DAPI expression.  
   
@@ -98,6 +106,14 @@ The DAPI from each round will be binarized then multiplied by eachother to remov
 **TO RUN:**    
 -   Drag-and-drop `R1_405_DAPI.tif_registered.tif_NL.tif` from the `nonLinear` folder into FIJI and select `Segmentation`.  
 
+*Run from the `nonLinear` folder...*  
+├── `max`
+   └── `crop`
+        └── `regImages`
+          ├── `composite`
+          └── `nonLinear`__<- drag DAPI file from this folder***__
+
+
 **WHAT HAPPENS: **    
 -   Segmentation Type: _select DAPI_    
     -    Segment based on DAPI signal from every round (to ensure registration in the z-axis)  
@@ -115,6 +131,15 @@ The DAPI from each round will be binarized then multiplied by eachother to remov
   
 ## `Quantification`  
 This option takes individual gene expression images from the `nonLinear` folder and quantifies their expression into tables saved in the `analyzedTables` folder.  
+
+*Run from the `nonLinear` folder...* 
+├── `max`
+   └── `crop`
+        └── `regImages`
+          ├── `composite`
+          └── `nonLinear` __<- Drag _first channel_ from this folder***__
+              └── `analyzedTables`
+              
   
 **TO RUN:**  
 -   Drag-and-drop your first gene image from the `nonLinear` folder into FIJI and select `Quantification` from the menu  
@@ -136,7 +161,11 @@ This option allows one to manually threshold and quantify a single channel that 
 Simply drag-and-drop your image from the `nonLinear` folder and run this option to manually threshold. This will overwrite the original quantified table in the `analyzedTables` folder.   
 
 ## `HiPlex Overlay`  
-This option creates a representative overlay image of your binarized gene expression images.  
+This option creates a representative overlay image of your binarized gene expression images. 
+
+1. Download the `.lut` files from [here](https://github.com/cembrowskilab/HiPlexMenu/tree/main/luts) 
+2. Place them in the FIJI `lut` folder
+3. Re-start Fiji
   
   
 **TO RUN:**
@@ -150,7 +179,7 @@ This option creates a representative overlay image of your binarized gene expres
 -   **In the future, there will be an option to change the colours and order of overlay images**  
   
    
--   To create a manual overlay image: pseudocolour according to prefered image colours and and use FIJI's `Image` -> `Overlay...` -> `Add Image`
+-   To **create a manual overlay image**: pseudocolour according to prefered image colours and and use FIJI's `Image` -> `Overlay...` -> `Add Image` with zero background checked!
 
 ## `Automated Run`  
   
