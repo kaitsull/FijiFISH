@@ -1,11 +1,12 @@
-HiPlex Menu *v3.5.0*
+HiPlex Menu *v3.5.5*
 ================  
 ##### AUTHOR: [KAITLIN SULLIVAN](https://github.com/kaitsull) (UBC) _2019-Present_    
   
 *FIJI dropdown menu for mFISH registration, segmentation, and
 quantification.*   
 
-![](data/happyhip.png)
+![](data/happyhip.png)  
+
   
   
 -   🔧 [INSTALLATION](#installation) *(for your local computer ONLY)*
@@ -61,7 +62,7 @@ Tips for smooth image analysis:
 Files used in the FIJI app **must be**:  
 - `.tif` files  
 - `8-bit` images  
-- Scaled in microns  
+- Scaled in **microns**  
 - Named as such: **R#_XXX_Genename** (eg: `R1_405_DAPI`)
     - #= the imaging round number
     - XXX= the fluorophore excitation wavelength    
@@ -92,18 +93,19 @@ This option takes the original images and registers them together based on their
 
 ## `Segmentation`  
 This option takes the registered DAPI images from the `nonLinear` folder and segments them.  
+The DAPI from each round will be binarized then multiplied by eachother to remove cells from out-of-focus planes.
 
 **TO RUN:**    
 -   Drag-and-drop `R1_405_DAPI.tif_registered.tif_NL.tif` from the `nonLinear` folder into FIJI and select `Segmentation`.  
 
 **WHAT HAPPENS: **    
--   Segmentation Type:  
+-   Segmentation Type: _select DAPI_    
     -    Segment based on DAPI signal from every round (to ensure registration in the z-axis)  
     -    If there is a round where DAPI is not segmentable, uncheck it
--   Threshold Type:  
+-   Threshold Type: _binarize the images for segmentation_      
     -    Automatic Thresholding  
     -    Manual Thresholding: (select threshold manually with a slider if some DAPI rounds look strange via Automatic Thresholding) 
--   Dialation Value:
+-   Dialation Value: _dilate ROIs to include the surrounding cytosol_  
     -    Suggested Value = `3 microns`  
     -    For densly packed regions or nuclear expression only, change value to `0 microns`  
       
@@ -118,8 +120,9 @@ This option takes individual gene expression images from the `nonLinear` folder 
 -   Drag-and-drop your first gene image from the `nonLinear` folder into FIJI and select `Quantification` from the menu  
   
   
-**WHAT HAPPENS:** 
--   `Automatic thresholding` will take the provided tail of the image's cumulative histogram  
+**WHAT HAPPENS:**   
+-   **NEW:** `Perfusion` prompt will show up. This is under construction, select **Yes** unless working with __human__ or __embryonic__ tissue.  
+-   `Automatic thresholding` will take the provided tail of the image's cumulative histogram via *MaxEntropy*    
 -   `Manual thresholding` allows one to manually select the threshold for each image (*useful in cases of autofluorescence*)  
 
 **OUTPUT:**  
@@ -152,7 +155,8 @@ This option creates a representative overlay image of your binarized gene expres
 ## `Automated Run`  
   
 **It is suggested to only use AutoRun once you are comfortable with each individual analysis step**  
-This option runs a full analysis from `Registration` -> `Segmentation -> `Quantification` with pauses for options (detailed further below) 
+This option runs a full analysis from `Registration` -> `Segmentation -> `Quantification` without many pauses for options.
+It will automatically: crop, segment, and quantify - there will be no option to choose.  
   
 **TO RUN:**    
 -   simply drag and drop `R1_405_DAPI.tif` into FIJI and select `Automated Run`.  
