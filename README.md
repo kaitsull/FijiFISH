@@ -1,6 +1,8 @@
+# THIS IS A PRIVATE, UNPUBLISHED REPOSITORY, PLEASE CONTACT KAITLIN FOR ACCESS AND CREDIT
+
 HiPlex Menu *v3.5.5*
 ================  
-##### AUTHOR: [KAITLIN SULLIVAN](https://github.com/kaitsull) (UBC) _2019-Present_    
+### AUTHOR: [KAITLIN SULLIVAN](https://github.com/kaitsull) (UBC) _2019-Present_    
   
 *FIJI dropdown menu for mFISH registration, segmentation, and
 quantification.*   
