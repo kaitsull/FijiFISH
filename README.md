@@ -1,8 +1,9 @@
-# THIS IS A PRIVATE, UNPUBLISHED REPOSITORY, PLEASE CONTACT KAITLIN FOR ACCESS AND CREDIT!
+# FijiFISH
 
-HiPlex Menu *v3.5.5*
+HiPlex Menu *v3.7.0*
 ================  
-### AUTHOR: [KAITLIN SULLIVAN](https://github.com/kaitsull) (UBC) _2019-Present_    
+### AUTHOR: [KAITLIN SULLIVAN](https://github.com/kaitsull) (UBC) _2019-2025_    
+### TECHNICAL CONTACT: [MARGO KAPUSTINA](https://github.com/MargoKapustina) (UBC) _2025-Present_
   
 *FIJI dropdown menu for mFISH registration, segmentation, and
 quantification.*   
@@ -56,9 +57,9 @@ quantification.*
 ## File Conventions  
 ### ROIs  
 Tips for smooth image analysis:
-- Save ROI for first round on the microscope and use re-load it for subsequent rounds (differences in polygons may affect nonlinear registration)  
+- Save ROI for first round on the microscope and re-load it for subsequent imaging rounds 
 - Ensure same zoom and resolution across rounds  
-- Be wary of high laser intensities (autofluorescence will affect automated thresholding)  
+- Be wary of high laser gain and intensity with low expressers   
 
 ### Image Files  
 Files used in the FIJI app **must be**:  
@@ -74,15 +75,15 @@ Files used in the FIJI app **must be**:
 ![](https://github.com/cembrowskilab/HiPlexMenu/blob/main/data/max.png)
 
 *Example output file folder structure __after analysis is complete__...*  
-├── `max`
-   └── `crop`
-        └── `regImages`
-          ├── `composite` DAPI overlays from registration
-          └── `nonLinear`
-              ├── `analyzedImages` binarized images with ROIs
-              ├── `analyzedTables` tables for [RUHi](https://github.com/cembrowskilab/RUHi)
-              ├── `correctedImages` images with background correction
-              └── `overlay` binarized images
+├── `max`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── `crop`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── `regImages`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── `composite` DAPI overlays from registration  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── `nonLinear`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── `analyzedImages` binarized images with ROIs  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── `analyzedTables` tables for [RUHi](https://github.com/cembrowskilab/RUHi)  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── `correctedImages` images with background correction  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── `overlay` binarized images  
 
 
 # Image Analysis  
@@ -135,20 +136,19 @@ The DAPI from each round will be binarized then multiplied by eachother to remov
 This option takes individual gene expression images from the `nonLinear` folder and quantifies their expression into tables saved in the `analyzedTables` folder.  
 
 *Run from the `nonLinear` folder...* 
-├── `max`
-   └── `crop`
-        └── `regImages`
-          ├── `composite`
-          └── `nonLinear` __<- Drag _first channel_ from this folder***__
-              └── `analyzedTables`
+├── `max`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── `crop`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── `regImages`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── `composite`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── `nonLinear` __<- Drag _first channel_ from this folder***__  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── `analyzedTables`
               
   
 **TO RUN:**  
 -   Drag-and-drop your first gene image from the `nonLinear` folder into FIJI and select `Quantification` from the menu  
   
   
-**WHAT HAPPENS:**   
--   **NEW:** `Perfusion` prompt will show up. This is under construction, select **Yes** unless working with __human__ or __embryonic__ tissue.  
+**WHAT HAPPENS:**    
 -   `Automatic thresholding` will take the provided tail of the image's cumulative histogram via *MaxEntropy*    
 -   `Manual thresholding` allows one to manually select the threshold for each image (*useful in cases of autofluorescence*)  
 
@@ -197,10 +197,10 @@ It will automatically: crop, segment, and quantify - there will be no option to 
 
   
 # Data Analysis  
-See the [RUHi Package](https://github.com/cembrowskilab/RUHi) for how to: visualize, dimensionally reduce, and cluster this data!  
+See the [RUHi Package](https://github.com/cembrowskilab/RUHi) for how to: visualize, dimensionally reduce, and cluster the data generated from `Quantification`!  
 
 # Bugs and Issues  
-Take a screenshot of the Log, the Debug Window, and any other relevant info or messages and open up an issue - I will try and get to it as soon as I can 😺!
+Take a screenshot of the Log, the Debug Window, and any other relevant info or messages and open up an issue on our Cembrowski Lab GitHub - we will try and get to it as soon as we can 😺!
 
 
 
