@@ -9,6 +9,8 @@ ___
   
 #### AUTHOR: [Kaitlin Sullivan](https://github.com/kaitsull) (UBC) _2019-2025_    
 #### TECHNICAL CONTACT: [Margo Kapustina](https://github.com/MargoKapustina) (UBC) _2025-Present_  
+  
+See in-depth video tutorials here:  
 
 ___ 
   
