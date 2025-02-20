@@ -1,16 +1,16 @@
-# FijiFISH
+# FijiFISH *v3.7.0*
 
-HiPlex Menu *v3.7.0*
-================  
-### AUTHOR: [KAITLIN SULLIVAN](https://github.com/kaitsull) (UBC) _2019-2025_    
-### TECHNICAL CONTACT: [MARGO KAPUSTINA](https://github.com/MargoKapustina) (UBC) _2025-Present_
+![](data/fijiFISH.png) 
   
 *FIJI dropdown menu for mFISH registration, segmentation, and
-quantification.*   
+quantification.*  
 
-![](data/happyhip.png)  
-
+___  
   
+#### AUTHOR: [Kaitlin Sullivan](https://github.com/kaitsull) (UBC) _2019-2025_    
+#### TECHNICAL CONTACT: [Margo Kapustina](https://github.com/MargoKapustina) (UBC) _2025-Present_  
+
+___ 
   
 -   🔧 [INSTALLATION](#installation) *(for your local computer ONLY)*
     -   [Permanent](#permanent)
