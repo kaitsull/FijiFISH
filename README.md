@@ -1,4 +1,4 @@
-# FijiFISH *v3.7.0*
+# FijiFISH *v5.0.0*
 
 ![](data/fijiFISH.png) 
   
@@ -10,7 +10,7 @@ ___
 #### AUTHOR: [Kaitlin Sullivan](https://github.com/kaitsull) (UBC) _2019-2025_    
 #### TECHNICAL CONTACT: [Margo Kapustina](https://github.com/MargoKapustina) (UBC) _2025-Present_  
   
-See in-depth video tutorials here:  
+See in-depth video tutorials **coming shortly**:  
 
 ___ 
   
@@ -48,7 +48,7 @@ ___
   
 ### Temporary  
 *This installation is useful for using the menu when on shared computers or read-only versions of FIJI. You will need to re-install the macro each time you open a new FIJI session.*  
-1.  Save the [latest version](https://github.com/cembrowskilab/HiPlexMenu/blob/main/HiPlexMenu3-5-5.ijm) of the menu as a `.ijm` file  
+1.  Save the [latest version](https://github.com/kaitsull/HiPlexMenu/blob/main/fijiFISH-v5.ijm) of the menu as a `.ijm` file  
 2.  Open your FIJI app  
 3.  From the top menu select: *Plug-ins* -> *Macros* -> *Install*  
 4.  Select `HiplexMenu_v4.ijm` from wherever you have it saved  
@@ -202,6 +202,8 @@ It will automatically: crop, segment, and quantify - there will be no option to 
 See the [RUHi Package](https://github.com/cembrowskilab/RUHi) for how to: visualize, dimensionally reduce, and cluster the data generated from `Quantification`!  
 
 # Bugs and Issues  
+Ctrl + F for `Troubleshoot` and `SPEED` throughout the code to find points where you can optimize the code to your liking based on your data and imaging parameters. Please feel free to fork and update anything you feel could be enhanced!!!
+  
 Take a screenshot of the Log, the Debug Window, and any other relevant info or messages and open up an issue on our Cembrowski Lab GitHub - we will try and get to it as soon as we can 😺!
 
 
