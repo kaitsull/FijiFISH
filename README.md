@@ -51,7 +51,7 @@ ___
 1.  Save the [latest version](https://github.com/kaitsull/HiPlexMenu/blob/main/fijiFISH-v5.ijm) of the menu as a `.ijm` file  
 2.  Open your FIJI app  
 3.  From the top menu select: *Plug-ins* -> *Macros* -> *Install*  
-4.  Select `HiplexMenu_v4.ijm` from wherever you have it saved  
+4.  Select `FijiFISH-v5.ijm` from wherever you have it saved  
 5.  You will now see the happy hippocampus icon in your FIJI for the remainder of your session. 
 6.  HiPlex Overlay currently does not work on read-only versions of FIJI   
 
@@ -131,7 +131,8 @@ The DAPI from each round will be binarized then multiplied by eachother to remov
     -    For densly packed regions or nuclear expression only, change value to `0 microns`  
       
 -   Segmented image is saved in an `analyzedImages` folder
--   Segmented ROIs are saved in `analyzedTables` folder      
+-   Segmented ROIs are saved in `analyzedTables` folder
+-   _**IF USING EXTERNAL SEGMENTATION ALGORITHMS**_: for Baysor, Weka, or CellPose, place your Fiji-readable ROIs as `RoiSet.zip` in `analyzedTables` and skip straight to Quantification.     
   
   
 ## `Quantification`  
