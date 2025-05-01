@@ -181,9 +181,10 @@ This option creates a representative overlay image of your binarized gene expres
   
 **OUTPUT:**  
 -   The image will save in the `overlay` folder as `TestCOMP.png`.  
--   **In the future, there will be an option to change the colours and order of overlay images**  
-  
-   
+
+**DRAWBACKS AND WORKAROUNDS**
+*In the future, there will be an plug-in option to change the colours and order of overlay images*     
+-   Right now this only allows up to 12 colours without any control over their order or assigned colour.
 -   To **create a manual overlay image**: pseudocolour according to prefered image colours and and use FIJI's `Image` -> `Overlay...` -> `Add Image` with zero background checked!
 
 ## `Automated Run`  
