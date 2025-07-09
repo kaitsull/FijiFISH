@@ -38,7 +38,7 @@ ___
   
 ### Permanent  
 *This installation ensures each time you open up FIJI the menu is already installed. To update you will simply replace the existing code with the new version.*   
-1.  Copy the raw contents of the [latest version](https://github.com/cembrowskilab/HiPlexMenu/blob/main/fijiFISH-v5.ijm) of the menu  
+1.  Copy the raw contents of the [latest version](https://github.com/cembrowskilab/HiPlexMenu/blob/main/fijiFISH-v505.ijm) of the menu  
 2.  Open your FIJI app  
 3.  *Plug-ins* -> *Macros* -> *Startup Macros*  
 4.  Paste the code at the very bottom of the StartupMacros.txt  
@@ -48,7 +48,7 @@ ___
   
 ### Temporary  
 *This installation is useful for using the menu when on shared computers or read-only versions of FIJI. You will need to re-install the macro each time you open a new FIJI session.*  
-1.  Save the [latest version](https://github.com/kaitsull/HiPlexMenu/blob/main/fijiFISH-v5.ijm) of the menu as a `.ijm` file  
+1.  Save the [latest version](https://github.com/kaitsull/HiPlexMenu/blob/main/fijiFISH-v505.ijm) of the menu as a `.ijm` file  
 2.  Open your FIJI app  
 3.  From the top menu select: *Plug-ins* -> *Macros* -> *Install*  
 4.  Select `FijiFISH-v5.ijm` from wherever you have it saved  
