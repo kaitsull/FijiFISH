@@ -29,6 +29,12 @@ ___
     -   [HiPlex Overlay](#hiplex-overlay)  
 -   📊 [DATA ANALYSIS](#data-analysis)     
 -   🐛 [BUGS AND ISSUES](#bugs-and-issues)  
+
+
+## Video Tutorial Hub:
+Click the image below to visit the mFISH Tutorial Hub, complete with comprehensive video tutorials!!!
+[![](https://raw.githubusercontent.com/kaitsull/VideoTutorials/refs/heads/main/images/Tutorial.png)](https://kaitsull.github.io/VideoTutorials/)
+
   
 ## Installation  
   A note to UBC TeamShare users:  
