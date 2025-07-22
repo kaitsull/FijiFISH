@@ -10,7 +10,10 @@ ___
 #### AUTHOR: [Kaitlin Sullivan](https://github.com/kaitsull) (UBC) _2019-2025_    
 #### TECHNICAL CONTACT: [Margo Kapustina](https://github.com/MargoKapustina) (UBC) _2025-Present_  
   
-See in-depth video tutorials **coming shortly**:  
+## Video Tutorial Hub:
+Click the image below to visit the mFISH Tutorial Hub, complete with comprehensive video tutorials!!!
+[![](https://raw.githubusercontent.com/kaitsull/VideoTutorials/refs/heads/main/images/Tutorial.png)](https://kaitsull.github.io/VideoTutorials/)
+
 
 ___ 
   
