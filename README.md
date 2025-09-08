@@ -1,6 +1,8 @@
 # FijiFISH *v5.0.5*
 
 ![](data/fijiFISH.png) 
+
+[![DOI](https://zenodo.org/badge/506418513.svg)](https://doi.org/10.5281/zenodo.17080222)
   
 *FIJI dropdown menu for mFISH registration, segmentation, and
 quantification.*  
