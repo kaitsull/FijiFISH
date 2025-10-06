@@ -7,6 +7,7 @@
 *FIJI dropdown menu for mFISH registration, segmentation, and
 quantification.*  
 
+ See our **[STAR Protocols](https://www.sciencedirect.com/science/article/pii/S2666166725005337)** publication for more.
 ___  
   
 #### AUTHOR: [Kaitlin Sullivan](https://github.com/kaitsull) (UBC) _2019-2025_    
